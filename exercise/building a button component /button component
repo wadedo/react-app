@@ -1,0 +1,21 @@
+//以下是 button这个component 的 code：
+//执行的onclick函数，在 父级component里定义了。
+//执行的 color 也在父级元素里定义了，即color='primary'
+//执行的 children  也是在父级元素里体现。
+//综上，也就是说， 子级component，即本component只是各种函数和变量的定义，
+//具体的参数值 在父级component，这样可以使得 子级component可以重复利用。
+import React from "react";
+interface Props {
+  children: string;
+  color?: "primary" | "secondary" | "danger"; //? means optional
+  onClick: () => void;
+}
+
+const Button = ({ children, onClick, color = "primary" }: Props) => {
+  return (
+    <button className={"btn btn-" + color} onClick={onClick}>
+      {children}
+    </button>
+  );
+};
+export default Button;
