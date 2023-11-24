@@ -1,28 +1,30 @@
 import React from "react";
 import { FormEvent, useState } from "react";
+import { useForm } from "react-hook-form";
 
 const Form = () => {
-  const [person, setPerson] = useState({
-    name: "",
-    age: "", // anitialize to 0.
-  });
+  // const form = useForm();
+  // console.log(form);
+  const { register, handleSubmit } = useForm(); //register输出一个object。
 
-  const handleSubmit = (event: FormEvent) => {
-    event.preventDefault();
-    console.log(person);
-  };
+  //有了react hook form, 不需要state hook.
+  // const [person, setPerson] = useState({
+  //   name: "",
+  //   age: "",
+  // });
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit((data) => console.log(data))}>
       <div className="mb-3">
         <label htmlFor="name" className="form-label">
           Name
         </label>
         <input
-          value={person.name} //make input to be controlled component.
-          onChange={(event) =>
-            setPerson({ ...person, name: event.target.value })
-          }
+          // value={person.name}
+          // onChange={(event) =>
+          //   setPerson({ ...person, name: event.target.value })
+          // }
+          {...register("names")}
           id="name"
           type="text"
           className="form-control"
@@ -33,10 +35,11 @@ const Form = () => {
           Age
         </label>
         <input
-          value={person.age} //make input to be controlled component.
-          onChange={(event) =>
-            setPerson({ ...person, age: parseInt(event.target.value) })
-          }
+          // value={person.age}
+          // onChange={(event) =>
+          //   setPerson({ ...person, age: parseInt(event.target.value) })
+          // }
+          {...register("age")}
           id="age"
           type="number"
           className="form-control"
