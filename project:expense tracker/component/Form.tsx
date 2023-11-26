@@ -1,23 +1,40 @@
-import React, { FormEvent } from "react";//注意要 导入{ FormEvent }
+import React, { FormEvent, useRef } from "react";
 
 const Form = () => {
+  const nameRef = useRef<HTMLInputElement>(null);
+  const ageRef = useRef<HTMLInputElement>(null);
+  const person = { name: "", age: 0 };
+
   const handleSubmit = (event: FormEvent) => {
-    event.preventDefault(); //阻止默认行为
-    console.log("Submitted"); //在控制台输出“Submitted”
+    event.preventDefault();
+    if (nameRef.current !== null) person.name = nameRef.current.value;
+    if (ageRef.current !== null) person.age = parseInt(ageRef.current.value);
+    console.log(person);
   };
+
   return (
-    <form onSubmit={handleSubmit}>//here just reference the function not calling.
+    <form onSubmit={handleSubmit}>
       <div className="mb-3">
         <label htmlFor="name" className="form-label">
           Name
         </label>
-        <input id="name" type="text" className="form-control" />
+        <input
+          ref={nameRef} //ref is from useRef.
+          id="name"
+          type="text"
+          className="form-control"
+        ></input>
       </div>
       <div className="mb-3">
         <label htmlFor="age" className="form-label">
           Age
         </label>
-        <input id="age" type="number" className="form-control" />
+        <input
+          ref={ageRef} //ref is from useRef.
+          id="age"
+          type="number"
+          className="form-control"
+        ></input>
       </div>
       <button className="btn btn-primary" type="submit">
         Submit
