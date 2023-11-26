@@ -1,14 +1,13 @@
-import React, { FormEvent, useRef } from "react";
+import { FormEvent, useState } from "react"; //FormEvent是event 的需要。
 
 const Form = () => {
-  const nameRef = useRef<HTMLInputElement>(null);
-  const ageRef = useRef<HTMLInputElement>(null);
-  const person = { name: "", age: 0 };
+  const [person, setPerson] = useState({
+    name: "",
+    age: "",
+  });
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
-    if (nameRef.current !== null) person.name = nameRef.current.value;
-    if (ageRef.current !== null) person.age = parseInt(ageRef.current.value);
     console.log(person);
   };
 
@@ -19,7 +18,10 @@ const Form = () => {
           Name
         </label>
         <input
-          ref={nameRef} //ref is from useRef.
+          value={person.name} //important: make input to be controlled component.
+          onChange={(event) =>
+            setPerson({ ...person, name: event.target.value })
+          }
           id="name"
           type="text"
           className="form-control"
@@ -30,7 +32,10 @@ const Form = () => {
           Age
         </label>
         <input
-          ref={ageRef} //ref is from useRef.
+          value={person.age} //important: make input to be controlled component.
+          onChange={(event) =>
+            setPerson({ ...person, age: parseInt(event.target.value) })
+          }
           id="age"
           type="number"
           className="form-control"
