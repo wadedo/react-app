@@ -1,8 +1,12 @@
-import React from "react";
+import React, { FormEvent } from "react";//注意要 导入{ FormEvent }
 
 const Form = () => {
+  const handleSubmit = (event: FormEvent) => {
+    event.preventDefault(); //阻止默认行为
+    console.log("Submitted"); //在控制台输出“Submitted”
+  };
   return (
-    <form>
+    <form onSubmit={handleSubmit}>//here just reference the function not calling.
       <div className="mb-3">
         <label htmlFor="name" className="form-label">
           Name
