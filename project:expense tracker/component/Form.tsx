@@ -1,27 +1,18 @@
 import { FormEvent, useState } from "react"; //FormEvent是event 的需要。
+import { useForm, FieldValues } from "react-hook-form";
 
 const Form = () => {
-  const [person, setPerson] = useState({
-    name: "",
-    age: "",
-  });
-
-  const handleSubmit = (event: FormEvent) => {
-    event.preventDefault();
-    console.log(person);
-  };
+  const { register, handleSubmit } = useForm();
+  const onSubmit = (data: FieldValues) => console.log(data);
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <div className="mb-3">
         <label htmlFor="name" className="form-label">
           Name
         </label>
         <input
-          value={person.name} //important: make input to be controlled component.
-          onChange={(event) =>
-            setPerson({ ...person, name: event.target.value })
-          }
+          {...register("name")}
           id="name"
           type="text"
           className="form-control"
@@ -32,10 +23,7 @@ const Form = () => {
           Age
         </label>
         <input
-          value={person.age} //important: make input to be controlled component.
-          onChange={(event) =>
-            setPerson({ ...person, age: parseInt(event.target.value) })
-          }
+          {...register("age")}
           id="age"
           type="number"
           className="form-control"
