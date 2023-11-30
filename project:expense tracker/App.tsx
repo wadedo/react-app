@@ -1,6 +1,9 @@
 import ExpenseFilter from "./expense-tracker/components/ExpenseFilter";
 import ExpenseList from "./expense-tracker/components/ExpenseList";
 import { useState } from "react";
+import ExpenseForm from "./expense-tracker/components/ExpenseForm";
+
+export const categories = ["Groceries", "Utilities", "Entertainment"];
 
 function App() {
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -17,6 +20,9 @@ function App() {
 
   return (
     <div>
+      <div className="mb-5">
+        <ExpenseForm></ExpenseForm>
+      </div>
       {/* mb-3 is for adding margin-bottom=3 */}
       <div className="mb-3">
         <ExpenseFilter
