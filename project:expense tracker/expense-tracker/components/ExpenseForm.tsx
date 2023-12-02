@@ -1,5 +1,14 @@
 import React from "react";
 import { categories } from "../../App";
+import { z } from "zod";
+
+const schema = z.object({
+  description: z.string().min(3).max(50),
+  amount: z.number().min(0.01).max(100_000),
+  category: z.enum(categories),
+});
+
+type ExpenseFormData = z.infer<typeof schema>;
 
 const ExpenseForm = () => {
   return (
