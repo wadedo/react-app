@@ -20,7 +20,7 @@ function App() {
   return (
     <div>
       <div className="mb-5">
-        <ExpenseForm></ExpenseForm>
+        <ExpenseForm onSubmit={(data) => console.log(data)}></ExpenseForm>
       </div>
       {/* mb-3 is for adding margin-bottom=3 */}
       <div className="mb-3">
