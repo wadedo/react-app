@@ -47,7 +47,7 @@ function App() {
     setUsers([newUser, ...users]);
     axios
       .post("https://jsonplaceholder.typicode.com/users", newUser)
-      .then((res) => setUsers([res.data, ...users]))
+      .then(({ data: savedUser }) => setUsers([savedUser, ...users]))
       .catch((err) => {
         setError(err.message);
         setUsers(originalUsers);
