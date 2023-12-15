@@ -1,23 +1,16 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import apiClient from "./services/api-client";
-
-interface User {
-  id: number;
-  name: string;
-}
+import userService, { User } from "./services/user-service";
 
 function App() {
   const [users, setUsers] = useState<User[]>([]);
   const [error, setError] = useState("");
   const [isLoading, setLoading] = useState(false); //adding.
   useEffect(() => {
-    const controller = new AbortController();
     setLoading(true); //adding
-    apiClient
-      .get<User[]>("/users", {
-        signal: controller.signal,
-      })
+
+    const { request, cancel } = userService.getAllUsers();
+    request
       .then((res) => {
         setUsers(res.data);
         setLoading(false); //adding
@@ -28,13 +21,13 @@ function App() {
         setLoading(false); //adding
       });
 
-    return () => controller.abort();
+    return () => cancel();
   }, []);
 
   const deleteUser = (user: User) => {
     const originalUsers = [...users];
     setUsers(users.filter((u) => u.id !== user.id));
-    apiClient.delete("/users/"+user.id).catch((err) => {
+    userService.deleteUser(user.id).catch((err) => {
       setError(err.message);
       setUsers(originalUsers);
     });
@@ -44,8 +37,8 @@ function App() {
     const originalUsers = [...users];
     const newUser = { id: 0, name: "wade" };
     setUsers([newUser, ...users]);
-    apiClient
-      .post("/users", newUser)
+    userService
+      .createUser(newUser)
       .then((res) => setUsers([res.data, ...users]))
       .catch((err) => {
         setError(err.message);
@@ -57,7 +50,7 @@ function App() {
     const originalUsers = [...users];
     const updatedUser = { ...user, name: user.name + "!!" };
     setUsers(users.map((u) => (u.id === user.id ? updatedUser : u)));
-    apiClient.patch("/users/" + user.id, updatedUser).catch((err) => {
+    userService.updateUser(updatedUser).catch((err) => {
       setError(err.message);
       setUsers(originalUsers);
     });
