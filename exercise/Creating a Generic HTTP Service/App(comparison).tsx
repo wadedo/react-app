@@ -1,93 +1,37 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
-import userService, { User } from "./services/user-service";
+import apiClient from "./api-client";
 
-function App() {
-  const [users, setUsers] = useState<User[]>([]);
-  const [error, setError] = useState("");
-  const [isLoading, setLoading] = useState(false); //adding.
-  useEffect(() => {
-    setLoading(true); //adding
-
-    const { request, cancel } = userService.getAllUsers();
-    request
-      .then((res) => {
-        setUsers(res.data);
-        setLoading(false); //adding
-      })
-      .catch((err) => {
-        if (axios.isCancel(err)) return;
-        setError(err.message);
-        setLoading(false); //adding
-      });
-
-    return () => cancel();
-  }, []);
-
-  const deleteUser = (user: User) => {
-    const originalUsers = [...users];
-    setUsers(users.filter((u) => u.id !== user.id));
-    userService.deleteUser(user.id).catch((err) => {
-      setError(err.message);
-      setUsers(originalUsers);
-    });
-  };
-
-  const addUser = () => {
-    const originalUsers = [...users];
-    const newUser = { id: 0, name: "wade" };
-    setUsers([newUser, ...users]);
-    userService
-      .createUser(newUser)
-      .then((res) => setUsers([res.data, ...users]))
-      .catch((err) => {
-        setError(err.message);
-        setUsers(originalUsers);
-      });
-  };
-
-  const updateUser = (user: User) => {
-    const originalUsers = [...users];
-    const updatedUser = { ...user, name: user.name + "!!" };
-    setUsers(users.map((u) => (u.id === user.id ? updatedUser : u)));
-    userService.updateUser(updatedUser).catch((err) => {
-      setError(err.message);
-      setUsers(originalUsers);
-    });
-  };
-  return (
-    <>
-      {error && <p className="text-danger">{error}</p>}
-      {isLoading && <div className="spinner-border"></div>}
-      <button className="btn btn-primary bm-3" onClick={addUser}>
-        Add
-      </button>
-      <ul className="list-group">
-        {users.map((user) => (
-          <li
-            key={user.id}
-            className="list-group-item d-flex justify-content-between"
-          >
-            {user.name}
-            <div>
-              <button
-                className="btn btn-outline-secondary mx-1"
-                onClick={() => updateUser(user)}
-              >
-                Update
-              </button>
-              <button
-                className="btn btn-outline-danger"
-                onClick={() => deleteUser(user)}
-              >
-                Delete
-              </button>
-            </div>
-          </li>
-        ))}
-      </ul>
-    </>
-  );
+interface Entity{
+    id: number;
 }
 
-export default App;
+
+class HttpService {
+    endpoint: string;
+    constructor(endpoint: string){
+        this.endpoint=endpoint;
+    }
+    //sending an http request for backend.
+    getAll<T>(){
+        const controller = new AbortController();
+        const request = apiClient.get<T[]>(this.endpoint, {
+        signal: controller.signal,
+      });
+      return {request, cancel:()=>controller.abort()}
+    }
+
+    delete(id:number){
+        return apiClient.delete(this.endpoint+"/"+id)
+    }
+
+    create<T>(entity:T){
+        return apiClient.post(this.endpoint, entity)
+    }
+
+    update<T extends Entity>(entity: T){
+        return apiClient.patch(this.endpoint+"/" + entity.id, entity)
+    }
+
+}
+
+const create = (endpoint:string)=> new HttpService(endpoint);
+export default create;
